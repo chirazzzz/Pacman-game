@@ -1,5 +1,3 @@
-* { box-sizing: border-box; }
-
 html, body {
   margin: 10;
   padding: 10;
@@ -18,25 +16,26 @@ html, body {
   height: 15px;
 }
 
-.square {
-  background: orange;
-}
-
 .pac-dot {
-  background-color: green;
+  background: purple;
   border: 5px solid white;
+  box-sizing: border-box;
 }
 
 .wall {
-  background-color: blue;
+  background: blue;
+}
+
+.ghost-lair {
+  background: black;
 }
 
 .power-pellet {
-  background-color: green;
+  background: green;
   border-radius: 7.5px;
 }
 
 .pacman {
-  background-color: yellow;
+  background: yellow;
   border-radius: 7.5px;
 }
