@@ -68,4 +68,44 @@ function createBoard() {
 
 createBoard()
 
-console.log(squares)
+// starting position of pacman
+let pacmanCurrentIndex = 490;
+
+squares[pacmanCurrentIndex].classList.add('pacman')
+
+function control(e) {
+  squares[pacmanCurrentIndex].classList.remove('pacman')
+  switch(e.key) {
+    case 'ArrowRight':
+      console.log('right pressed')
+      if (pacmanCurrentIndex % width < (width - 1)) {
+        squares[pacmanCurrentIndex + 1].classList.add('pacman')
+        pacmanCurrentIndex++
+      }
+      break
+    case 'ArrowUp':
+      console.log('up pressed')
+      if (pacmanCurrentIndex - width >= 0) {
+        squares[pacmanCurrentIndex - width].classList.add('pacman')
+        pacmanCurrentIndex -= width
+      }
+      break
+    case 'ArrowLeft':
+      console.log('left pressed')
+      if (pacmanCurrentIndex % width !== 0) {
+        squares[pacmanCurrentIndex - 1].classList.add('pacman')
+        pacmanCurrentIndex--
+      }
+      break
+    case 'ArrowDown':
+      console.log('down pressed')
+      if (pacmanCurrentIndex + width < (width * width)) {
+        squares[pacmanCurrentIndex + width].classList.add('pacman')
+        pacmanCurrentIndex += width
+      }
+      break
+  }
+}
+
+// addEventListener to entire document so it hears all keypresses
+document.addEventListener('keydown', control)
