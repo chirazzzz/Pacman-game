@@ -78,33 +78,38 @@ function control(e) {
   switch(e.key) {
     case 'ArrowRight':
       console.log('right pressed')
-      if (pacmanCurrentIndex % width < (width - 1)) {
-        squares[pacmanCurrentIndex + 1].classList.add('pacman')
-        pacmanCurrentIndex++
-      }
+      if (!squares[pacmanCurrentIndex + 1].classList.contains('wall') &&
+          !squares[pacmanCurrentIndex + 1].classList.contains('ghost-lair') &&
+          pacmanCurrentIndex % width < (width - 1)) {
+            pacmanCurrentIndex++
+          }
       break
     case 'ArrowUp':
       console.log('up pressed')
-      if (pacmanCurrentIndex - width >= 0) {
-        squares[pacmanCurrentIndex - width].classList.add('pacman')
-        pacmanCurrentIndex -= width
-      }
+      if (!squares[pacmanCurrentIndex - width].classList.contains('wall') &&
+          !squares[pacmanCurrentIndex - width].classList.contains('ghost-lair') &&
+          pacmanCurrentIndex - width >= 0) {
+            pacmanCurrentIndex -= width
+          }
       break
     case 'ArrowLeft':
       console.log('left pressed')
-      if (pacmanCurrentIndex % width !== 0) {
-        squares[pacmanCurrentIndex - 1].classList.add('pacman')
-        pacmanCurrentIndex--
-      }
+      if (!squares[pacmanCurrentIndex - 1].classList.contains('wall') &&
+          !squares[pacmanCurrentIndex - 1].classList.contains('ghost-lair') &&
+          pacmanCurrentIndex % width !== 0) {
+            pacmanCurrentIndex--
+          }
       break
     case 'ArrowDown':
       console.log('down pressed')
-      if (pacmanCurrentIndex + width < (width * width)) {
-        squares[pacmanCurrentIndex + width].classList.add('pacman')
-        pacmanCurrentIndex += width
-      }
+      if (!squares[pacmanCurrentIndex + width].classList.contains('wall') &&
+          !squares[pacmanCurrentIndex + width].classList.contains('ghost-lair') &&
+          pacmanCurrentIndex + width < (width * width)) {
+            pacmanCurrentIndex += width
+          }
       break
   }
+  squares[pacmanCurrentIndex].classList.add('pacman')
 }
 
 // addEventListener to entire document so it hears all keypresses
