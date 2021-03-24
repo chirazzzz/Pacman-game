@@ -2,7 +2,8 @@ const width = 28
 const gameGrid = document.querySelector(".grid")
 const scoreDisplay = document.querySelector("#score")
 let squares = []
-scoreDisplay.textContent = '23'
+let score = 0
+scoreDisplay.textContent = score
 
 // 0 - pacdots
 // 1 - wall
@@ -12,31 +13,31 @@ scoreDisplay.textContent = '23'
 
 const layout = [
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,
-  1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,1,1,1,1,0,1,1,1,1,1,0,0,0,0,1,1,1,1,1,0,1,1,1,1,0,1,
   1,3,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,3,1,
-  1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1,
+  1,0,1,1,1,0,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,0,1,1,1,0,1,
   1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
   1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,1,
   1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,1,
-  1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,
-  1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,
+  1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+  1,0,1,1,1,0,0,1,1,1,1,1,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,
   1,0,1,1,1,1,0,1,1,4,4,4,4,4,4,4,4,4,4,1,1,0,1,1,1,1,1,1,
   1,0,1,1,1,1,0,1,1,4,1,1,1,2,2,1,1,1,4,1,1,0,1,1,1,1,1,1,
   1,0,1,1,1,1,0,1,1,4,1,2,2,2,2,2,2,1,4,1,1,0,1,1,1,1,1,1,
   4,4,4,4,4,4,0,0,0,4,1,2,2,2,2,2,2,1,4,0,0,0,4,4,4,4,4,4,
   1,1,1,1,1,1,0,1,1,4,1,2,2,2,2,2,2,1,4,1,1,0,1,1,0,1,1,1,
   1,1,1,1,1,1,0,1,1,4,1,1,1,1,1,1,1,1,4,1,1,0,1,1,0,1,1,1,
-  1,1,1,1,1,1,0,1,1,4,1,1,1,1,1,1,1,1,4,1,1,0,1,1,0,1,1,1,
+  1,1,1,1,1,0,0,1,1,4,1,1,1,1,1,1,1,1,4,1,1,0,1,1,0,0,1,1,
   1,0,0,0,0,0,0,0,0,4,4,4,4,4,4,4,4,4,4,0,0,0,1,1,0,0,0,1,
   1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1,
   1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1,
   1,3,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,3,1,
-  1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1,
+  1,1,0,0,1,1,0,1,1,0,1,1,1,0,0,1,1,1,0,1,1,0,1,1,0,0,1,1,
   1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1,
   1,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,1,
   1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,
-  1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,
+  1,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,1,
   1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 ]
@@ -77,15 +78,15 @@ function control(e) {
   squares[pacmanCurrentIndex].classList.remove('pacman')
   switch(e.key) {
     case 'ArrowRight':
-      console.log('right pressed')
       if (!squares[pacmanCurrentIndex + 1].classList.contains('wall') &&
           !squares[pacmanCurrentIndex + 1].classList.contains('ghost-lair') &&
           pacmanCurrentIndex % width < (width - 1)) {
             pacmanCurrentIndex++
+          } else if (pacmanCurrentIndex === 391) {
+            pacmanCurrentIndex = 364
           }
       break
     case 'ArrowUp':
-      console.log('up pressed')
       if (!squares[pacmanCurrentIndex - width].classList.contains('wall') &&
           !squares[pacmanCurrentIndex - width].classList.contains('ghost-lair') &&
           pacmanCurrentIndex - width >= 0) {
@@ -93,21 +94,27 @@ function control(e) {
           }
       break
     case 'ArrowLeft':
-      console.log('left pressed')
       if (!squares[pacmanCurrentIndex - 1].classList.contains('wall') &&
           !squares[pacmanCurrentIndex - 1].classList.contains('ghost-lair') &&
           pacmanCurrentIndex % width !== 0) {
             pacmanCurrentIndex--
+          } else if (pacmanCurrentIndex === 364) {
+            pacmanCurrentIndex = 391
           }
       break
     case 'ArrowDown':
-      console.log('down pressed')
       if (!squares[pacmanCurrentIndex + width].classList.contains('wall') &&
           !squares[pacmanCurrentIndex + width].classList.contains('ghost-lair') &&
           pacmanCurrentIndex + width < (width * width)) {
             pacmanCurrentIndex += width
           }
       break
+  }
+
+  if (squares[pacmanCurrentIndex].classList.contains('pac-dot')) {
+    squares[pacmanCurrentIndex].classList.remove('pac-dot')
+    score++
+    scoreDisplay.textContent = score
   }
   squares[pacmanCurrentIndex].classList.add('pacman')
 }
