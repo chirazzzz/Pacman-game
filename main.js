@@ -110,14 +110,37 @@ function control(e) {
           }
       break
   }
+  squares[pacmanCurrentIndex].classList.add('pacman')
+  eatPacDots()
+}
 
+// addEventListener to entire document so it hears all keypresses
+document.addEventListener('keydown', control)
+
+function eatPacDots() {
   if (squares[pacmanCurrentIndex].classList.contains('pac-dot')) {
     squares[pacmanCurrentIndex].classList.remove('pac-dot')
     score++
     scoreDisplay.textContent = score
   }
-  squares[pacmanCurrentIndex].classList.add('pacman')
 }
 
-// addEventListener to entire document so it hears all keypresses
-document.addEventListener('keydown', control)
+class Ghost {
+  constructor(className, startIndex, speed) {
+      this.className = className
+      this.startIndex = startIndex
+      this.speed = speed
+  }
+
+}
+
+const ghosts = [
+  new Ghost('inky', 347, 300),
+  new Ghost('blinky', 403, 250),
+  new Ghost('pinky', 352, 400),
+  new Ghost('clyde', 408, 350)
+]
+
+ghosts.forEach(ghost => {
+  squares[ghost.startIndex].classList.add(ghost.className)
+})
