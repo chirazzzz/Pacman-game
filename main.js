@@ -23,7 +23,7 @@ const layout = [
   1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
   1,0,1,1,1,0,0,1,1,1,1,1,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,
   1,0,1,1,1,1,0,1,1,4,4,4,4,4,4,4,4,4,4,1,1,0,1,1,1,1,1,1,
-  1,0,1,1,1,1,0,1,1,4,1,1,1,2,2,1,1,1,4,1,1,0,1,1,1,1,1,1,
+  1,0,1,1,1,1,0,1,1,4,1,1,2,2,2,2,1,1,4,1,1,0,1,1,1,1,1,1,
   1,0,1,1,1,1,0,1,1,4,1,2,2,2,2,2,2,1,4,1,1,0,1,1,1,1,1,1,
   4,4,4,4,4,4,0,0,0,4,1,2,2,2,2,2,2,1,4,0,0,0,4,4,4,4,4,4,
   1,1,1,1,1,1,0,1,1,4,1,2,2,2,2,2,2,1,4,1,1,0,1,1,0,1,1,1,
@@ -130,6 +130,9 @@ class Ghost {
       this.className = className
       this.startIndex = startIndex
       this.speed = speed
+      this.ghostCurrentIndex = startIndex
+      this.isScared = false
+      this.timerId = NaN
   }
 
 }
@@ -138,9 +141,39 @@ const ghosts = [
   new Ghost('inky', 347, 300),
   new Ghost('blinky', 403, 250),
   new Ghost('pinky', 352, 400),
-  new Ghost('clyde', 408, 350)
+  new Ghost('clyde', 408, 500)
 ]
 
+// draw ghosts onto grid 
 ghosts.forEach(ghost => {
-  squares[ghost.startIndex].classList.add(ghost.className)
+  squares[ghost.ghostCurrentIndex].classList.add(ghost.className)
+  squares[ghost.ghostCurrentIndex].classList.add('ghost')
 })
+
+//move the ghosts
+ghosts.forEach(ghost => moveGhost(ghost))
+
+function moveGhost(ghost) {
+  console.log('moved')
+  const directions = [-1, +1, -width, +width]
+  let direction = directions[Math.floor(Math.random() * 4)]
+  console.log(direction)
+  
+  ghost.timerId = setInterval(() => {
+    //if the next square does NOT contain a wall and does NOT contain a ghost
+    if (
+        !squares[ghost.ghostCurrentIndex + direction].classList.contains('wall') &&
+        !squares[ghost.ghostCurrentIndex + direction].classList.contains('ghost')
+    ) {
+      //remove any ghost
+      squares[ghost.ghostCurrentIndex].classList.remove(ghost.className)
+      squares[ghost.ghostCurrentIndex].classList.remove('ghost')
+      //add direction to current Index
+      ghost.ghostCurrentIndex += direction
+      //add ghost class
+      squares[ghost.ghostCurrentIndex].classList.add(ghost.className)
+      squares[ghost.ghostCurrentIndex].classList.add('ghost')
+    } else direction = directions[Math.floor(Math.random() * directions.length)]
+  }, ghost.speed)
+
+}
