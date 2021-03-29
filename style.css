@@ -60,3 +60,8 @@ html, body {
   background-color: orange;
   border: none;
 }
+
+.isScared {
+  background-color: chartreuse;
+  border: none;
+}

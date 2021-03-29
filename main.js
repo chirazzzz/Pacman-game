@@ -25,7 +25,7 @@ const layout = [
   1,0,1,1,1,1,0,1,1,4,4,4,4,4,4,4,4,4,4,1,1,0,1,1,1,1,1,1,
   1,0,1,1,1,1,0,1,1,4,1,1,2,2,2,2,1,1,4,1,1,0,1,1,1,1,1,1,
   1,0,1,1,1,1,0,1,1,4,1,2,2,2,2,2,2,1,4,1,1,0,1,1,1,1,1,1,
-  4,4,4,4,4,4,0,0,0,4,1,2,2,2,2,2,2,1,4,0,0,0,4,4,4,4,4,4,
+  4,4,4,4,4,4,0,0,0,4,2,2,2,2,2,2,2,2,4,0,0,0,4,4,4,4,4,4,
   1,1,1,1,1,1,0,1,1,4,1,2,2,2,2,2,2,1,4,1,1,0,1,1,0,1,1,1,
   1,1,1,1,1,1,0,1,1,4,1,1,1,1,1,1,1,1,4,1,1,0,1,1,0,1,1,1,
   1,1,1,1,1,0,0,1,1,4,1,1,1,1,1,1,1,1,4,1,1,0,1,1,0,0,1,1,
@@ -112,6 +112,7 @@ function control(e) {
   }
   squares[pacmanCurrentIndex].classList.add('pacman')
   eatPacDots()
+  eatPowerPellet()
 }
 
 // addEventListener to entire document so it hears all keypresses
@@ -125,23 +126,39 @@ function eatPacDots() {
   }
 }
 
+function eatPowerPellet() {
+  if (squares[pacmanCurrentIndex].classList.contains('power-pellet')) {
+    //remove power-pellet, add a score of 10 and display it
+    squares[pacmanCurrentIndex].classList.remove('power-pellet')
+    score += 10
+    scoreDisplay.textContent = score
+    //change each of the four ghosts to isScared
+    ghosts.forEach(ghost => ghost.isScared = true)
+    //use setTimeout to unscare ghosts after 10 seconds
+    setTimeout(unscareGhosts, 10000)
+  }
+}
+
+function unscareGhosts() {
+  ghosts.forEach(ghost => ghost.isScared = false)
+}
+
 class Ghost {
   constructor(className, startIndex, speed) {
-      this.className = className
-      this.startIndex = startIndex
-      this.speed = speed
-      this.ghostCurrentIndex = startIndex
-      this.isScared = false
-      this.timerId = NaN
+    this.className = className
+    this.startIndex = startIndex
+    this.speed = speed
+    this.ghostCurrentIndex = startIndex
+    this.isScared = false
+    this.timerId = NaN
   }
-
 }
 
 const ghosts = [
   new Ghost('inky', 347, 300),
   new Ghost('blinky', 403, 250),
-  new Ghost('pinky', 352, 400),
-  new Ghost('clyde', 408, 500)
+  new Ghost('pinky', 352, 200),
+  new Ghost('clyde', 408, 350)
 ]
 
 // draw ghosts onto grid 
@@ -162,18 +179,36 @@ function moveGhost(ghost) {
   ghost.timerId = setInterval(() => {
     //if the next square does NOT contain a wall and does NOT contain a ghost
     if (
-        !squares[ghost.ghostCurrentIndex + direction].classList.contains('wall') &&
-        !squares[ghost.ghostCurrentIndex + direction].classList.contains('ghost')
-    ) {
+      !squares[ghost.ghostCurrentIndex + direction].classList.contains('wall') &&
+      !squares[ghost.ghostCurrentIndex + direction].classList.contains('ghost')
+      ) {
       //remove any ghost
       squares[ghost.ghostCurrentIndex].classList.remove(ghost.className)
-      squares[ghost.ghostCurrentIndex].classList.remove('ghost')
+      squares[ghost.ghostCurrentIndex].classList.remove('ghost', 'isScared')
       //add direction to current Index
       ghost.ghostCurrentIndex += direction
       //add ghost class
       squares[ghost.ghostCurrentIndex].classList.add(ghost.className)
       squares[ghost.ghostCurrentIndex].classList.add('ghost')
     } else direction = directions[Math.floor(Math.random() * directions.length)]
-  }, ghost.speed)
 
+    // if ghost is scared 
+    if(ghost.isScared) {
+      squares[ghost.ghostCurrentIndex].classList.add('isScared')
+    }
+
+    // if pacman eats scared ghost
+    if ( ghost.isScared && 
+         squares[ghost.ghostCurrentIndex].classList.contains('pacman') ) {
+      //remove classnames - ghost.className, 'ghost' & 'isScared'
+      squares[ghost.ghostCurrentIndex].classList.remove(ghost.className, 'ghost', 'isScared')
+      // change ghosts currentIndex back to its startIndex
+      ghost.ghostCurrentIndex = ghost.startIndex
+      // add score of 100
+      score += 100
+      scoreDisplay.textContent = score
+      //re-add classnames of ghost.className and 'ghost' to the ghosts new postion
+      squares[ghost.ghostCurrentIndex].classList.add(ghost.className, 'ghost')
+    }
+  }, ghost.speed)
 }
