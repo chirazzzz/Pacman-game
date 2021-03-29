@@ -210,5 +210,31 @@ function moveGhost(ghost) {
       //re-add classnames of ghost.className and 'ghost' to the ghosts new postion
       squares[ghost.ghostCurrentIndex].classList.add(ghost.className, 'ghost')
     }
+    gameOver()
+    winGame()
   }, ghost.speed)
+}
+
+function gameOver() {
+  //if the square pacman is in contains a ghost AND the square does NOT contain a scared ghost {
+  if ( !squares[pacmanCurrentIndex].classList.contains('isScared')  && 
+       squares[pacmanCurrentIndex].classList.contains('ghost') ) {
+  //for each ghost - we need to stop it moving
+  ghosts.forEach(ghost => clearInterval(ghost.timerId)) 
+  //remove eventlistener from our control function
+  document.removeEventListener('keydown', control)
+  // Update score display to show lost game
+  scoreDisplay.textContent = `You Lose`
+}
+}
+
+function winGame() {
+  if(score > 500) {
+    //for each ghost - we need to stop it moving
+    ghosts.forEach(ghost => clearInterval(ghost.timerId)) 
+    //remove eventlistener from our control function
+    document.removeEventListener('keydown', control)
+    // Update score display to show they've won game
+    scoreDisplay.textContent = `You Win, you've collected all the pac-dots`
+  }
 }
